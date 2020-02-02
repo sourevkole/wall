@@ -17,23 +17,41 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    <div class="row mb-3">
-                        <input type="email" id="inputEmail" class="form-control font-size-14" placeholder="Email address" required="" autofocus="">
-                    </div>
-                    <div class="row mb-3">
-                        <input type="text" id="inputFullName" class="form-control font-size-14" placeholder="Full Name" required="" autofocus="">
-                    </div>
-                    <div class="row mb-3">
-                        <input type="password" id="inputPassword" class="form-control font-size-14" placeholder="Password" required="" autofocus="">
-                    </div>
-                    <div class="row mb-3">
-                        <input type="password" id="inputConfirmPassword" class="form-control font-size-14" placeholder="Confirm Password" required="" autofocus="">
-                    </div>
-                </div>
-                <div class="col-md-12 mb-2">
-                    <div class="row">
-                        <button class="btn btn-md btn-primary btn-block" type="submit">Sign Up</button>
-                    </div>
+                    <form class="row" [formGroup]="signUpFormGroup" (ngSubmit)="signUp()">
+                        <div class="col-md-12">
+                            <div class="row mb-3">
+                                <input [ngClass]="{ 'is-invalid': signUpSubmitted && formControls.email.errors }" type="email" formControlName="email" id="inputEmail" class="form-control font-size-14" placeholder="Email address" required="" autofocus="">
+                                <div *ngIf="signUpSubmitted && formControls.email.errors" class="invalid-feedback">
+                                    <div *ngIf="formControls.email.errors.required">Email is required</div>
+                                    <div *ngIf="formControls.email.errors.email">Email must be a valid email address</div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <input [ngClass]="{ 'is-invalid': signUpSubmitted && formControls.fullName.errors }" type="text" formControlName="fullName" id="inputFullName" class="form-control font-size-14" placeholder="Full Name" required="" autofocus="">
+                                <div *ngIf="signUpSubmitted && formControls.fullName.errors" class="invalid-feedback">
+                                    <div *ngIf="formControls.fullName.errors.required">Full Name is required</div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <input [ngClass]="{ 'is-invalid': signUpSubmitted && formControls.password.errors }" type="password" formControlName="password" id="inputPassword" class="form-control font-size-14" placeholder="Password" required="" autofocus="">
+                                <div *ngIf="signUpSubmitted && formControls.password.errors" class="invalid-feedback">
+                                    <div *ngIf="formControls.password.errors.required">Password is required</div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <input [ngClass]="{ 'is-invalid': signUpSubmitted && formControls.confirmpassword.errors && (formControls.confirmpassword.value !== formControls.password.value) }" type="password" formControlName="confirmpassword" id="inputConfirmPassword" class="form-control font-size-14" placeholder="Confirm Password" required="" autofocus="">
+                                <div *ngIf="signUpSubmitted && formControls.confirmpassword.errors" class="invalid-feedback">
+                                    <div *ngIf="formControls.confirmpassword.errors.required">Confirm the given password.</div>
+                                    <div *ngIf="formControls.confirmpassword.value !== formControls.password.value">Confirm password doest matche.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-2">
+                            <div class="row">
+                                <button class="btn btn-md btn-primary btn-block" type="submit">Sign Up</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="col-md-12">
                     <p>By signing up, you agree to our Terms , Data Policy and Cookies Policy .</p>

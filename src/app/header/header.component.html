@@ -1,1 +1,11 @@
-<div id="wall-header"></div>
+<div id="wall-header">
+    <div class="row ui-wall-header-container">
+        <div class="col"></div>
+        <div class="col-xs-1 col-sm-1 col-md-1" *ngIf="userSessionAlive">
+            <a (click)="logout()">Logout</a>
+        </div>
+        <div class="col-xs-1 col-sm-1 col-md-1" *ngIf="!userSessionAlive">
+            <a (click)="signIn()">SignIn</a>
+        </div>
+    </div>    
+</div>

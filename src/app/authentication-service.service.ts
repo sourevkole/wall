@@ -4,24 +4,36 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firest
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { User } from './interface/user';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
   private userData: any;
+  private userSessionAlive = new BehaviorSubject<boolean>(false);
 
   constructor(public angularFireStore: AngularFirestore, public angularFireAuth: AngularFireAuth, public router: Router,
     public ngZone: NgZone) { 
     this.angularFireAuth.authState.subscribe(user => {
       if (user) {
         this.userData = user;
-        localStorage.setItem('wallUser', JSON.stringify(this.userData));
+        sessionStorage.setItem('wallUser', JSON.stringify(this.userData));
         this.router.navigate(['home']);
+        this.userSessionAlive.next(true);
       } else {
-        localStorage.setItem('wallUser', null);
+        sessionStorage.setItem('wallUser', null);
       }
     })
+  }
+
+  isUserSessionAlive(): Observable<boolean> {
+    return this.userSessionAlive.asObservable();
+  }
+
+  getAuthentication():boolean {
+    let userSession = sessionStorage.getItem('wallUser');
+    return userSession !== undefined && userSession !== null && userSession!=="null";
   }
 
   googleAuth() {
@@ -35,6 +47,7 @@ export class AuthenticationService {
           this.router.navigate(['home']);
        })
       this.setUserData(result.user);
+      this.userSessionAlive.next(true);
     }).catch((error) => {
       window.alert(error)
     })
@@ -49,8 +62,13 @@ export class AuthenticationService {
       password: null,
       emailVerified: user.emailVerified
     }
-    return userRef.set(userData, {
-      merge: true
+    return userRef.set(userData, { merge: true })
+  }
+
+  authLogout() {
+    return this.angularFireAuth.auth.signOut().then(() => {
+      sessionStorage.removeItem('wallUser');
+      this.userSessionAlive.next(false);
     })
   }
 
